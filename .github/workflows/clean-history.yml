@@ -1,0 +1,28 @@
+name: Clean History
+
+on:
+  workflow_dispatch:
+
+jobs:
+  reset-history:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reset Git History
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "\({{ github.actor_id }}+\){{ github.actor }}@users.noreply.github.com"
+          
+         
+          git checkout --orphan temp_branch
+          git add -A
+          git commit -m "Initial commit"
+          
+       
+          git branch -D main || git branch -M main
+          git branch -m main
+          git push -f origin main
